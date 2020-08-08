@@ -8,7 +8,7 @@ interface IPet {
   breed: string;
   media: Photo[];
   location: string;
-  id: string;
+  id: number;
 }
 
 const Pet: FunctionComponent<IPet> = ({ name, animal, breed, media, location, id }) => {
