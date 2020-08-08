@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
+import { Photo } from '@frontendmasters/pet';
 
-const Carousel = props => {
-    const [photos, setPhotos] = useState([]);
+const Carousel = (props: { media: Photo[] }) => {
+    const [photos, setPhotos] = useState([] as string[]);
     const [active, setActive] = useState(0);
 
-    const extractPhotos = props => {
-        const { media } = props;
+    const extractPhotos = (photoProps: { media: Photo[] }) => {
+        const { media } = photoProps;
         if (media.length) {
             return media.map(({ large }) => large)
         }
@@ -16,9 +17,15 @@ const Carousel = props => {
         setPhotos(extractPhotos(props))
     }, [props]);
 
-    const handleIndexClick = event => {
-        console.log('index', +event.target.dataset.index)
-        setActive(+event.target.dataset.index)
+    const handleIndexClick = (event: React.MouseEvent<HTMLElement>) => {
+        if (!(event.target instanceof HTMLElement)) {
+            return; 
+        }
+
+        if (event.target.dataset.index) {
+            console.log('index', +event.target.dataset.index)
+            setActive(+event.target.dataset.index)
+        }
     };
 
     return (
