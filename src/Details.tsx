@@ -14,11 +14,44 @@ interface IDetail {
     breed: string
 }
 
+const AdoptionModal: FunctionComponent<{ details: IDetail | null, url: string }> = ({ details, url }) => {
+    const [showModal, setShowModal] = useState(false);
+    const [{ backgroundColor, color }] = useContext(ThemeContext);
+
+    const toggleModal = () => setShowModal(!showModal);
+    const adopt = () => navigate(url);
+
+    if (!details) {
+        return null;
+    }
+
+    return (
+        <div className="details">   
+            <Carousel media={details.media} />
+            <div>
+                <h1>{details.name}</h1>
+                <h2>{`${details.animal} - ${details.breed} - ${details.location}`}</h2>
+                <button style={{ backgroundColor, color }} onClick={toggleModal}>Adopt {details.name}</button>
+                <p>{details.description}</p>
+                {
+                    showModal ?
+                    <Modal>
+                        <h1>Would you like to adopt {details.name}?</h1>
+                        <div className="buttons">
+                            <button onClick={adopt}>Yes</button>
+                            <button onClick={toggleModal}>No</button>
+                        </div>
+                    </Modal>                        
+                    : null
+                }
+            </div>
+        </div> 
+    );
+}
+
 const Details: FunctionComponent<RouteComponentProps<{ id: string}>> = (props) => {
     const [details, setDetails] = useState(null as IDetail | null);
     const [loading, setLoading] = useState(true);
-    const [{ backgroundColor, color }] = useContext(ThemeContext);
-    const [showModal, setShowModal] = useState(false);
     const [url, setUrl] = useState('')
 
     useEffect(() => {
@@ -64,33 +97,8 @@ const Details: FunctionComponent<RouteComponentProps<{ id: string}>> = (props) =
             }, console.error)
     }, [props.id]);
 
-    const toggleModal = () => setShowModal(!showModal);
-    const adopt = () => navigate(url);
-
     return (
-        loading ? <h1>Loading...</h1> :
-            (details ? 
-                <div className="details">
-                    <Carousel media={details.media} />
-                    <div>
-                        <h1>{details.name}</h1>
-                        <h2>{`${details.animal} - ${details.breed} - ${details.location}`}</h2>
-                        <button style={{ backgroundColor, color }} onClick={toggleModal}>Adopt {details.name}</button>
-                        <p>{details.description}</p>
-                        {
-                            showModal ?
-                            <Modal>
-                                <h1>Would you like to adopt {details.name}?</h1>
-                                <div className="buttons">
-                                    <button onClick={adopt}>Yes</button>
-                                    <button onClick={toggleModal}>No</button>
-                                </div>
-                            </Modal>                        
-                            : null
-                        }
-                    </div>
-                </div> : null
-            )
+        loading ? <h1>Loading...</h1> : <AdoptionModal details={details} url={url} /> 
     )
 }
 
