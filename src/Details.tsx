@@ -3,7 +3,7 @@ import pet, { Photo } from "@frontendmasters/pet";
 import Carousel from "./Carousel";
 import ThemeContext from './ThemeContext';
 import Modal from './Modal';
-import { navigate } from '@reach/router';
+import { navigate, RouteComponentProps } from '@reach/router';
 
 interface IDetail {
     name: string,
@@ -14,8 +14,7 @@ interface IDetail {
     breed: string
 }
 
-const Details = (props: { id: string }) => {
-    const id = +props.id;
+const Details: FunctionComponent<RouteComponentProps<{ id: string}>> = (props) => {
     const [details, setDetails] = useState(null as IDetail | null);
     const [loading, setLoading] = useState(true);
     const [{ backgroundColor, color }] = useContext(ThemeContext);
@@ -24,7 +23,11 @@ const Details = (props: { id: string }) => {
 
     useEffect(() => {
         setDetails(null)
-        pet.animal(id)
+        if (!props.id) {
+            return
+        }
+
+        pet.animal(+props.id)
             .then(({ animal }) => {
                 const { 
                     name, description, photos: media, type,
@@ -59,15 +62,10 @@ const Details = (props: { id: string }) => {
                 setUrl(url)
                 setLoading(false);
             }, console.error)
-    }, [id]);
+    }, [props.id]);
 
     const toggleModal = () => setShowModal(!showModal);
     const adopt = () => navigate(url);
-
-    // if (!details) {
-    //     navigate('/');
-    //     return
-    // }
 
     return (
         loading ? <h1>Loading...</h1> :
