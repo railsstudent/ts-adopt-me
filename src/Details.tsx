@@ -1,13 +1,22 @@
-import React, { useState, useEffect, useContext } from 'react';
-import pet from "@frontendmasters/pet";
+import React, { useState, useEffect, useContext, FunctionComponent } from 'react';
+import pet, { Photo } from "@frontendmasters/pet";
 import Carousel from "./Carousel";
 import ThemeContext from './ThemeContext';
 import Modal from './Modal';
 import { navigate } from '@reach/router';
 
-const Details = (props) => {
+interface IDetail {
+    name: string,
+    animal: string,
+    location: string,
+    description: string,
+    media: Photo[],
+    breed: string
+}
+
+const Details = (props: { id: string }) => {
     const id = +props.id;
-    const [details, setDetails] = useState(null);
+    const [details, setDetails] = useState(null as IDetail | null);
     const [loading, setLoading] = useState(true);
     const [{ backgroundColor, color }] = useContext(ThemeContext);
     const [showModal, setShowModal] = useState(false);
@@ -55,6 +64,11 @@ const Details = (props) => {
     const toggleModal = () => setShowModal(!showModal);
     const adopt = () => navigate(url);
 
+    if (!details) {
+        navigate('/');
+        return
+    }
+
     return (
         loading ? <h1>Loading...</h1> :
             <div className="details">
@@ -67,12 +81,10 @@ const Details = (props) => {
                     {
                         showModal ?
                         <Modal>
-                            <div>
-                                <h1>Would you like to adopt {details.name}?</h1>
-                                <div className="buttons">
-                                    <button onClick={adopt}>Yes</button>
-                                    <button onClick={toggleModal}>No</button>
-                                </div>
+                            <h1>Would you like to adopt {details.name}?</h1>
+                            <div className="buttons">
+                                <button onClick={adopt}>Yes</button>
+                                <button onClick={toggleModal}>No</button>
                             </div>
                         </Modal>                        
                         : null
