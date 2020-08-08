@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { FunctionComponent } from 'react';
 import { Link } from '@reach/router';
+import { Photo } from '@frontendmasters/pet';
 
-const Pet = ({ name, animal, breed, media, location, id }) => {
+interface IPet {
+  name: string;
+  animal: string;
+  breed: string;
+  media: Photo[];
+  location: string;
+  id: string;
+}
+
+const Pet: FunctionComponent<IPet> = ({ name, animal, breed, media, location, id }) => {
   const hero = media.length ? media[0].small : "http://placecorgi.com/300/300";
 
   return (
