@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useContext } from 'react'
-import pet, { ANIMALS } from '@frontendmasters/pet'
+import pet, { ANIMALS, Animal } from '@frontendmasters/pet'
 import useDropdown from './useDropdown';
 import Results from './Results';
 import ThemeContext from './ThemeContext';
 
 const SearchParams = () => {    
     const [location, setLocation] = useState('Seattle, WA');
-    const [breeds, setBreeds] = useState([]);
+    const [breeds, setBreeds] = useState([] as string[]);
     const [animal, AnimalDropdown] = useDropdown('Animal', 'dog', ANIMALS);
     const [breed, BreedDropdown, setBreed] = useDropdown('Breed', '', breeds);
-    const [pets, setPets] = useState([]);
+    const [pets, setPets] = useState([] as Animal[]);
     const [{ backgroundColor, color }, setTheme] = useContext(ThemeContext);
 
     useEffect(() => {
@@ -29,7 +29,7 @@ const SearchParams = () => {
         type: animal
       });
       // console.log('animals', animals);
-      setPets(animals || []);
+      setPets(animals || [] as Animal[]);
     }
 
     return (
@@ -43,8 +43,7 @@ const SearchParams = () => {
                 Location
                 <input id="location" value={location} 
                   placeholder="Location" 
-                  onChange={e => setLocation(e.target.value)}>
-                </input>
+                  onChange={e => setLocation(e.target.value)} />
             </label>
             <AnimalDropdown />
             <BreedDropdown />
